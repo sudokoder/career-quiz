@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Stream Finder</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --progress-bg: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            max-width: 600px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: var(--progress-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #334155;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        /* Results Styling */
+        .results-title {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .top-match-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .top-match-stream {
+            font-size: 28px;
+            font-weight: 800;
+            color: #166534;
+            margin: 5px 0;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .chart-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .chart-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .chart-bar-bg {
+            background: var(--progress-bg);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            border-radius: 6px;
+            transition: width 1s ease-out;
+        }
+
+        .restart-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .restart-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <!-- Header/Progress Section -->
+    <div class="header" id="quiz-header">
+        <h1 id="progress-title">Loading Quiz...</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Dynamic Steps Placeholder -->
+    <div id="dynamic-steps"></div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="step">
+        <h2 class="results-title">Your Personalized Fit Profile</h2>
+        <div class="top-match-box">
+            <div style="font-size: 14px; color: #15803d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Your Strongest Match</div>
+            <div class="top-match-stream" id="top-stream-name">Engineering</div>
+            <p id="top-stream-desc" style="color: #166534; font-size: 14px; margin-top: 8px;"></p>
+        </div>
+
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: #334155;">How you score across all streams:</h3>
+        <div class="chart-container" id="chart-container"></div>
+
+        <button class="restart-btn" onclick="restartQuiz()">Retake the Assessment</button>
+    </div>
+</div>
+
+<script>
+    // System definitions mapped directly to your 5 streams
+    const STREAMS = {
+        tech: { name: "Engineering, Tech & Pure Sciences", desc: "Focuses heavily on intelligent computing, AI, systems architecture, or high-end core research fields like Quantum and Aerospace." },
+        medical: { name: "Medical, AYUSH & Allied Health", desc: "Suited for healthcare practitioners across classic medicine, alternative care systems (AYUSH), or vital diagnostic and support ecosystems." },
+        commerce: { name: "Commerce, Management & Corporate", desc: "Built for financial frameworks, corporate logistics, enterprise trading, human resources, or real-world operational strategy." },
+        legal: { name: "Legal Studies Stream", desc: "Geared around high-level advocacy, compliance strategy, policy structures, corporate contracts, or the evolving terrain of Cyber Law." },
+        agriculture: { name: "Agricultural Sciences Stream", desc: "Centers around planetary food stability, biotech integration, agribusiness logistics, or ecological engineering systems." }
+    };
+
+    const QUESTIONS = [
+        {
+            text: "When confronted with a major real-world bottleneck, which angle naturally excites you most?",
+            options: [
+                { text: "Building an automated tool, code logic, or physical prototype to solve it.", stream: "tech" },
+                { text: "Analyzing how it directly impacts human well-being, safety, or biological survival.", stream: "medical" },
+                { text: "Optimizing the financial costs, labor, and scaling operations to execute a fix.", stream: "commerce" },
+                { text: "Structuring rules, contracts, or policies to safely govern how it is handled.", stream: "legal" },
+                { text: "Evaluating its sustainability impact on ecosystems, soil systems, or organic food structures.", stream: "agriculture" }
+            ]
+        },
+        {
+            text: "Pick the work dynamic or primary daily landscape where you see yourself thriving:",
+            options: [
+                { text: "Deep computational blocks, engineering design tools, or development labs.", stream: "tech" },
+                { text: "Clinical, diagnostic, or emergency care centers actively monitoring health.", stream: "medical" },
+                { text: "Corporate conference rooms, trading desks, or managing dynamic enterprise metrics.", stream: "commerce" },
+                { text: "Arbitration tables, corporate legal departments, or structural policy reviews.", stream: "legal" },
+                { text: "Field stations, ecological labs, or commercial production facilities checking sustainability.", stream: "agriculture" }
+            ]
+        },
+        {
+            text: "Which core skill do you find yourself deploying or wanting to develop the most?",
+            options: [
+                { text: "Mathematical synthesis, system diagnostics, or building algorithmic architecture.", stream: "tech" },
+                { text: "Empathic analysis, physiological diagnostic precision, or clinical intervention.", stream: "medical" },
+                { text: "Negotiation, predictive financial modeling, data analytics, or brand scaling.", stream: "commerce" },
+                { text: "Critical reading, structured rhetorical debate, logic testing, or legal defense.", stream: "legal" },
+                { text: "Environmental assessment, biological engineering, or agricultural resource planning.", stream: "agriculture" }
+            ]
+        },
+        {
+            text: "How do you honestly feel about your post-graduation timeline and early career rewards?",
+            options: [
+                { text: "I want to leap into cutting-edge industry training early or jump fast into tech stacks.", stream: "tech" },
+                { text: "I'm willing to commit to long clinical arcs, or opt for targeted health support tracks.", stream: "medical" },
+                { text: "I want direct operational placement with embedded apprenticeships to earn stipends early.", stream: "commerce" },
+                { text: "I prefer immediate 5-year integrated professional degrees right out of high school/PUC.", stream: "legal" },
+                { text: "I am driven by regional or state-backed technical systems focusing on environmental sectors.", stream: "agriculture" }
+            ]
+        },
+        {
+            text: "If you had a weekend to deep-dive into an article or research topic, which one wins?",
+            options: [
+                { text: "How Autonomous Robotics and Artificial Intelligence are changing baseline manufacturing.", stream: "tech" },
+                { text: "Emerging protocols in medical diagnostics, public health safety, or mental health systems.", stream: "medical" },
+                { text: "How market trading metrics, data analytics, and startup operations navigate recessions.", stream: "commerce" },
+                { text: "The cross-section of data security, constitutional rights, and emerging Cyber Law structures.", stream: "legal" },
+                { text: "The scaling mechanics of natural farming models, forestry management, and global agritech.", stream: "agriculture" }
+            ]
+        }
+    ];
+
+    let currentStep = 0;
+    let scores = { tech: 0, medical: 0, commerce: 0, legal: 0, agriculture: 0 };
+
+    function initQuiz() {
+        const stepsContainer = document.getElementById('dynamic-steps');
+        stepsContainer.innerHTML = '';
+        
+        QUESTIONS.forEach((q, qIdx) => {
+            let stepDiv = document.createElement('div');
+            stepDiv.className = `step ${qIdx === 0 ? 'active' : ''}`;
+            stepDiv.id = `step-${qIdx}`;
+            
+            let qText = document.createElement('div');
+            qText.className = 'question-text';
+            qText.innerText = q.text;
+            stepDiv.appendChild(qText);
+            
+            let optsList = document.createElement('div');
+            optsList.className = 'options-list';
+            
+            q.options.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => handleAnswer(qIdx, opt.stream);
+                optsList.appendChild(btn);
+            });
+            
+            stepDiv.appendChild(optsList);
+            stepsContainer.appendChild(stepDiv);
+        });
+        updateHeader();
+    }
+
+    function updateHeader() {
+        if (currentStep < QUESTIONS.length) {
+            document.getElementById('progress-title').innerText = `Question ${currentStep + 1} of ${QUESTIONS.length}`;
+            let pct = (currentStep / QUESTIONS.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        } else {
+            document.getElementById('quiz-header').style.display = 'none';
+        }
+    }
+
+    function handleAnswer(qIdx, selectedStream) {
+        scores[selectedStream]++;
+        
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        currentStep++;
+        
+        if (currentStep < QUESTIONS.length) {
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            updateHeader();
+        } else {
+            updateHeader();
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('results-section').classList.add('active');
+        
+        // Find top matching stream
+        let topStreamKey = 'tech';
+        let maxScore = -1;
+        for (let key in scores) {
+            if (scores[key] > maxScore) {
+                maxScore = scores[key];
+                topStreamKey = key;
+            }
+        }
+        
+        document.getElementById('top-stream-name').innerText = STREAMS[topStreamKey].name;
+        document.getElementById('top-stream-desc').innerText = STREAMS[topStreamKey].desc;
+
+        // Render chart bars
+        const chartContainer = document.getElementById('chart-container');
+        chartContainer.innerHTML = '';
+        
+        for (let key in scores) {
+            let pct = Math.round((scores[key] / QUESTIONS.length) * 100);
+            
+            let row = document.createElement('div');
+            row.className = 'chart-row';
+            
+            let labelRow = document.createElement('div');
+            labelRow.className = 'chart-label-row';
+            labelRow.innerHTML = `<span>${STREAMS[key].name}</span><span>${pct}%</span>`;
+            
+            let barBg = document.createElement('div');
+            barBg.className = 'chart-bar-bg';
+            
+            let barFill = document.createElement('div');
+            barFill.className = 'chart-bar-fill';
+            if(key === topStreamKey) barFill.style.background = '#16a34a'; // Green accent for champion
+            
+            barBg.appendChild(barFill);
+            row.appendChild(labelRow);
+            row.appendChild(barBg);
+            chartContainer.appendChild(row);
+            
+            // Trigger animation on layout paint frame
+            setTimeout(() => { barFill.style.width = `${pct}%`; }, 50);
+        }
+    }
+
+    function restartQuiz() {
+        currentStep = 0;
+        scores = { tech: 0, medical: 0, commerce: 0, legal: 0, agriculture: 0 };
+        document.getElementById('results-section').classList.remove('active');
+        document.getElementById('quiz-header').style.display = 'block';
+        initQuiz();
+    }
+
+    window.onload = initQuiz;
+</script>
+</body>
+</html>
