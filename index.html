@@ -1,204 +1,284 @@
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Perfect Career Path</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8">
 
-    body {
-        background-color: var(--bg);
-        color: var(--text);
-        line-height: 1.6;
-        padding: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-xl w-full p-6 sm:p-10 transition-all duration-300">
+        
+        <!-- Header & Progress -->
+        <div id="quiz-header" class="mb-8">
+            <div class="flex justify-between items-center mb-3">
+                <span id="progress-title" class="text-xs sm:text-sm font-bold text-indigo-600 uppercase tracking-wider">Question 1 of 5</span>
+                <span id="progress-percent" class="text-xs sm:text-sm font-semibold text-slate-400">20% Complete</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-indigo-600 h-full rounded-full transition-all duration-300 w-1/5"></div>
+            </div>
+        </div>
 
-    .quiz-container {
-        background: var(--card-bg);
-        max-width: 600px;
-        width: 100%;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        padding: 40px;
-        border: 1px solid var(--border);
-    }
+        <!-- Dynamic Questions Container -->
+        <div id="dynamic-steps">
+            <!-- Questions injected via JS -->
+        </div>
 
-    .header {
-        margin-bottom: 30px;
-    }
+        <!-- Results Display Container -->
+        <div id="results-section" class="hidden animate-fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Your Career Fit Profile</h2>
+                <p class="text-slate-500 text-sm sm:text-base">Based on your natural choices, here is your compatibility index.</p>
+            </div>
 
-    h1 {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: #0f172a;
-    }
+            <!-- Top Match Spotlight Box -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 sm:p-6 mb-8 text-center">
+                <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest bg-emerald-200/50 px-3 py-1 rounded-full">Your Strongest Fit</span>
+                <h3 id="top-stream-name" class="text-xl sm:text-2xl font-black text-emerald-900 mt-3">Technology, Science & Engineering</h3>
+                <p id="top-stream-desc" class="text-emerald-800 text-sm sm:text-base mt-2">You love logic, automation, systems, and finding practical ways to make things run faster.</p>
+            </div>
 
-    .progress-container {
-        width: 100%;
-        height: 6px;
-        background: var(--progress-bg);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 15px;
-    }
+            <!-- Detailed Bar Chart -->
+            <div class="mb-8">
+                <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Detailed Match Analysis</h4>
+                <div id="chart-container" class="space-y-4">
+                    <!-- Progress bars injected via JS -->
+                </div>
+            </div>
 
-    .progress-bar {
-        height: 100%;
-        background: var(--primary);
-        width: 0%;
-        transition: width 0.3s ease;
-    }
+            <!-- Retake Button -->
+            <button onclick="restartQuiz()" class="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-indigo-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V3a1 1 0 011-1z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M16 18a1 1 0 01-1-1v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 011.885-.666A5.002 5.002 0 0014 13h-3a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 01-1 1z" clip-rule="evenodd" />
+                </svg>
+                Retake Assessment
+            </button>
+        </div>
 
-    .step {
-        display: none;
-    }
-
-    .step.active {
-        display: block;
-        animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(4px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .question-text {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 12px;
-        color: #334155;
-    }
-
-    .question-hint {
-        font-size: 14px;
-        color: var(--text-light);
-        margin-bottom: 24px;
-        font-style: italic;
-    }
-
-    .options-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .option-btn {
-        background: var(--card-bg);
-        border: 2px solid var(--border);
-        border-radius: 10px;
-        padding: 16px 20px;
-        text-align: left;
-        font-size: 15px;
-        font-weight: 500;
-        cursor: pointer;
-        color: var(--text);
-        transition: all 0.2s ease;
-    }
-
-    .option-btn:hover {
-        border-color: var(--primary);
-        background: #eff6ff;
-    }
-
-    /* Results Styling */
-    .results-title {
-        text-align: center;
-        font-size: 22px;
-        margin-bottom: 10px;
-    }
-
-    .top-match-box {
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .top-match-stream {
-        font-size: 28px;
-        font-weight: 800;
-        color: #166534;
-        margin: 5px 0;
-    }
-
-    .chart-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin-bottom: 30px;
-    }
-
-    .chart-row {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .chart-label-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-light);
-    }
-
-    .chart-bar-bg {
-        background: var(--progress-bg);
-        height: 12px;
-        border-radius: 6px;
-        overflow: hidden;
-    }
-
-    .chart-bar-fill {
-        height: 100%;
-        background: var(--primary);
-        width: 0%;
-        border-radius: 6px;
-        transition: width 1s ease-out;
-    }
-
-    .restart-btn {
-        display: block;
-        width: 100%;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 16px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        text-align: center;
-        transition: background 0.2s;
-    }
-
-    .restart-btn:hover {
-        background: var(--primary-hover);
-    }
-</style>
-
-
-<!-- Dynamic Steps Placeholder -->
-<div id="dynamic-steps"></div>
-
-<!-- Results Section -->
-<div id="results-section" class="step">
-    <h2 class="results-title">Your Best Career Path</h2>
-    <div class="top-match-box">
-        <div style="font-size: 14px; color: #15803d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Your Strongest Match</div>
-        <div class="top-match-stream" id="top-stream-name">Technology & Science</div>
-        <p id="top-stream-desc" style="color: #166534; font-size: 14px; margin-top: 8px;"></p>
     </div>
 
-    <h3 style="font-size: 16px; margin-bottom: 12px; color: #334155;">Your score for each career path:</h3>
-    <div class="chart-container" id="chart-container"></div>
+    <script>
+        const STREAMS = {
+            tech: { 
+                name: "Technology, Science & Engineering", 
+                desc: "You love solving puzzles, coding software, and understanding how hardware, robots, or space vehicles are engineered." 
+            },
+            medical: { 
+                name: "Medical & Health Sciences", 
+                desc: "You care deeply about health, medicine, diagnosing sickness, or supporting wellness using modern biology." 
+            },
+            commerce: { 
+                name: "Commerce, Business & Corporate", 
+                desc: "You are excited by managing budgets, scaling business empires, leading teams, and organizing market operations." 
+            },
+            legal: { 
+                name: "Legal Studies & Advocacy", 
+                desc: "You enjoy analyzing rules, debating logically, defending fair rights, and managing corporate legal structures." 
+            },
+            agriculture: { 
+                name: "Agricultural Sciences & Nature", 
+                desc: "You care about food supplies, vertical gardens, sustainability, and working with natural earth systems." 
+            },
+            arts: { 
+                name: "Arts, Design & Humanities", 
+                desc: "You express yourself through writing stories, designing layouts, understanding human behavior, and painting visual environments." 
+            }
+        };
 
-    <button class="restart-btn" onclick="restartQuiz()">Start Over</button>
-</div>
+        const QUESTIONS = [
+            {
+                text: "Imagine we are building a brand-new city for 1 million people. Which job on the planning team do you want?",
+                options: [
+                    { text: "Writing code to manage the city's self-driving cars and electric power grids.", stream: "tech" },
+                    { text: "Designing state-of-the-art hospitals, clean clinics, and medical networks.", stream: "medical" },
+                    { text: "Setting the city's budget, tracking taxes, and helping businesses set up.", stream: "commerce" },
+                    { text: "Drafting the city constitution, protecting rights, and organizing fair courts.", stream: "legal" },
+                    { text: "Designing organic rooftop farms, local green spaces, and clean water supplies.", stream: "agriculture" },
+                    { text: "Designing beautiful public monuments, colorful cultural museums, and local art halls.", stream: "arts" }
+                ]
+            },
+            {
+                text: "What does your dream daily workspace look like?",
+                options: [
+                    { text: "A bright lab filled with computers, coding screens, and cool robotics setups.", stream: "tech" },
+                    { text: "A clean, quiet hospital wing, diagnostic ward, or therapy space.", stream: "medical" },
+                    { text: "A busy office, trading floor, or conference table where big decisions are made.", stream: "commerce" },
+                    { text: "A quiet legal office, research desk, or a dynamic courtroom setup.", stream: "legal" },
+                    { text: "An outdoor organic greenhouse, a botanical research laboratory, or a forest station.", stream: "agriculture" },
+                    { text: "An open creative studio, visual graphics workspace, or writing retreat.", stream: "arts" }
+                ]
+            },
+            {
+                text: "Which skill or activity makes you feel the most confident?",
+                options: [
+                    { text: "Solving logic puzzles, debugging errors, or working with numbers.", stream: "tech" },
+                    { text: "Learning how the human body works and finding out how to fix health problems.", stream: "medical" },
+                    { text: "Leading a group project, planning budgets, or running a mock marketplace.", stream: "commerce" },
+                    { text: "Examining arguments, writing strong rules, and debating what is fair.", stream: "legal" },
+                    { text: "Studying local plants, preserving wild forests, or experimenting with soil biology.", stream: "agriculture" },
+                    { text: "Writing fictional stories, sketching graphics, or creating animations.", stream: "arts" }
+                ]
+            },
+            {
+                text: "If your career path was a game, what kind of quest style matches your patience level?",
+                options: [
+                    { text: "A medium-length quest where you build cool gadgets and quickly see if your system works.", stream: "tech" },
+                    { text: "An epic, highly-respected multi-stage campaign that takes years of training to master.", stream: "medical" },
+                    { text: "A fast-paced match where you start earning scores, trading, and taking on responsibilities early.", stream: "commerce" },
+                    { text: "A structured tournament with set phases, clear certifications, and steady rulebooks.", stream: "legal" },
+                    { text: "A slow, peaceful sandbox game where you plant seedlings, nurture them, and wait seasons to harvest.", stream: "agriculture" },
+                    { text: "A free-roaming world with no strict rules, where you customize your playstyle as you go.", stream: "arts" }
+                ]
+            },
+            {
+                text: "You have free time to read a cool online article. Which title do you click?",
+                options: [
+                    { text: "How Artificial Intelligence and Humanoid Robots Are Adapting to Factory Jobs", stream: "tech" },
+                    { text: "The Scientific Discovery of How the Human Brain Recovers and Heals After Injury", stream: "medical" },
+                    { text: "How a Local Street Food Stall Expanded to Become a Million-Dollar Global Brand", stream: "commerce" },
+                    { text: "The Legal Battle Over Online Privacy Rights and Regulating Digital Corporations", stream: "legal" },
+                    { text: "The Tech Tools Protecting Global Forests and Creating Sustainable Organic Farms", stream: "agriculture" },
+                    { text: "How Color Palettes and Narrative Psychology Influence the Visual Design of Popular Apps", stream: "arts" }
+                ]
+            }
+        ];
+
+        let currentStep = 0;
+        let scores = { tech: 0, medical: 0, commerce: 0, legal: 0, agriculture: 0, arts: 0 };
+
+        function initQuiz() {
+            const container = document.getElementById('dynamic-steps');
+            container.innerHTML = '';
+
+            QUESTIONS.forEach((q, idx) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.id = `step-${idx}`;
+                stepDiv.className = `step animate-fade-in ${idx === 0 ? 'block' : 'hidden'}`;
+
+                const questionTitle = document.createElement('h3');
+                questionTitle.className = "text-lg sm:text-xl font-bold text-slate-800 mb-6 leading-snug";
+                questionTitle.innerText = q.text;
+                stepDiv.appendChild(questionTitle);
+
+                const optionsList = document.createElement('div');
+                optionsList.className = "space-y-3";
+
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-indigo-500 hover:bg-indigo-50/30 text-slate-700 hover:text-indigo-900 font-medium text-sm sm:text-base transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500";
+                    btn.innerText = opt.text;
+                    btn.onclick = () => selectOption(idx, opt.stream);
+                    optionsList.appendChild(btn);
+                });
+
+                stepDiv.appendChild(optionsList);
+                container.appendChild(stepDiv);
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            if (currentStep < QUESTIONS.length) {
+                document.getElementById('progress-title').innerText = `Question ${currentStep + 1} of ${QUESTIONS.length}`;
+                const rawPct = Math.round((currentStep / QUESTIONS.length) * 100);
+                document.getElementById('progress-percent').innerText = `${rawPct}% Complete`;
+                document.getElementById('progress-bar').style.width = `${rawPct || 5}%`;
+            } else {
+                document.getElementById('quiz-header').classList.add('hidden');
+            }
+        }
+
+        function selectOption(qIdx, stream) {
+            scores[stream]++;
+            document.getElementById(`step-${currentStep}`).classList.add('hidden');
+            document.getElementById(`step-${currentStep}`).classList.remove('block');
+            
+            currentStep++;
+
+            if (currentStep < QUESTIONS.length) {
+                document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+                document.getElementById(`step-${currentStep}`).classList.add('block');
+                updateProgress();
+            } else {
+                updateProgress();
+                renderResults();
+            }
+        }
+
+        function renderResults() {
+            document.getElementById('dynamic-steps').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+
+            let topStream = 'tech';
+            let maxVal = -1;
+
+            for (let s in scores) {
+                if (scores[s] > maxVal) {
+                    maxVal = scores[s];
+                    topStream = s;
+                }
+            }
+
+            document.getElementById('top-stream-name').innerText = STREAMS[topStream].name;
+            document.getElementById('top-stream-desc').innerText = STREAMS[topStream].desc;
+
+            const chartContainer = document.getElementById('chart-container');
+            chartContainer.innerHTML = '';
+
+            for (let s in scores) {
+                const pct = Math.round((scores[s] / QUESTIONS.length) * 100);
+                
+                const item = document.createElement('div');
+                item.className = "space-y-1.5";
+
+                const labelRow = document.createElement('div');
+                labelRow.className = "flex justify-between text-xs sm:text-sm font-semibold";
+                labelRow.innerHTML = `
+                    <span class="${s === topStream ? 'text-slate-900 font-extrabold' : 'text-slate-500'}">${STREAMS[s].name}</span>
+                    <span class="text-slate-400">${pct}%</span>
+                `;
+
+                const barBg = document.createElement('div');
+                barBg.className = "w-full bg-slate-100 h-2.5 rounded-full overflow-hidden";
+
+                const barFill = document.createElement('div');
+                barFill.className = `h-full rounded-full transition-all duration-1000 w-0 ${s === topStream ? 'bg-emerald-500' : 'bg-slate-300'}`;
+
+                barBg.appendChild(barFill);
+                item.appendChild(labelRow);
+                item.appendChild(barBg);
+                chartContainer.appendChild(item);
+
+                // Trigger animation on next paint loop
+                setTimeout(() => {
+                    barFill.style.width = `${pct}%`;
+                }, 50);
+            }
+        }
+
+        function restartQuiz() {
+            currentStep = 0;
+            scores = { tech: 0, medical: 0, commerce: 0, legal: 0, agriculture: 0, arts: 0 };
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('dynamic-steps').classList.remove('hidden');
+            document.getElementById('quiz-header').classList.remove('hidden');
+            initQuiz();
+        }
+
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
