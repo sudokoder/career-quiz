@@ -88,8 +88,15 @@
         .question-text {
             font-size: 18px;
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
             color: #334155;
+        }
+
+        .question-hint {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-style: italic;
         }
 
         .options-list {
@@ -253,17 +260,19 @@
     // Simplified questions in plain English
     const QUESTIONS = [
         {
-            text: "When you see a big problem in the world, what is the best way to solve it?",
+            text: "Imagine we are building a brand-new, modern city for 1 million people. Which part of the project would you want to lead?",
+            hint: "This helps us see your natural problem-solving style in a big real-world project.",
             options: [
-                { text: "Build a computer tool, write code, or make a machine to fix it.", stream: "tech" },
-                { text: "Find out how it affects people's health and try to save lives.", stream: "medical" },
-                { text: "Manage the money, organize the workers, and plan how to run the project.", stream: "commerce" },
-                { text: "Create fair rules or laws so everyone behaves correctly.", stream: "legal" },
-                { text: "Look at how it affects nature, the trees, water, and our food supply.", stream: "agriculture" }
+                { text: "Write the code for self-driving transport, smart electric grids, and city-wide internet.", stream: "tech" },
+                { text: "Design and run the hospital network, clean air zones, and emergency response plans.", stream: "medical" },
+                { text: "Manage the city's multi-million budget, secure bank loans, and bring in major businesses.", stream: "commerce" },
+                { text: "Draft the city's constitutional charter, driving rules, and court systems to ensure fairness.", stream: "legal" },
+                { text: "Create local vertical food farms, organic waste-recycling systems, and public green parks.", stream: "agriculture" }
             ]
         },
         {
             text: "Where would you feel happiest working every single day?",
+            hint: "Think about the physical environment you want to be in.",
             options: [
                 { text: "In a tech lab, writing code, or working with computers.", stream: "tech" },
                 { text: "In a clinic, dental office, or hospital helping patients.", stream: "medical" },
@@ -274,6 +283,7 @@
         },
         {
             text: "Which of these skills would you most like to learn or use?",
+            hint: "Pick what sounds fun or challenging to master.",
             options: [
                 { text: "Solving hard math puzzles, building apps, or fixing computer systems.", stream: "tech" },
                 { text: "Caring for sick people, studying health, and diagnosing illnesses.", stream: "medical" },
@@ -284,6 +294,7 @@
         },
         {
             text: "How long do you want to study before you start working and earning money?",
+            hint: "Be honest about your patience with homework and college timelines!",
             options: [
                 { text: "I want to study for 4 years and get a well-paid job in technology quickly.", stream: "tech" },
                 { text: "I am happy to study for a long time (5 to 9 years) to become a specialized doctor or therapist.", stream: "medical" },
@@ -294,6 +305,7 @@
         },
         {
             text: "If you had to read an interesting article this weekend, which topic would you choose?",
+            hint: "Select what catches your attention first when browsing the news.",
             options: [
                 { text: "How robots and Artificial Intelligence (AI) are changing our future.", stream: "tech" },
                 { text: "New discoveries in medicine, healthcare, and brain science.", stream: "medical" },
@@ -320,6 +332,13 @@
             qText.className = 'question-text';
             qText.innerText = q.text;
             stepDiv.appendChild(qText);
+
+            if(q.hint) {
+                let qHint = document.createElement('div');
+                qHint.className = 'question-hint';
+                qHint.innerText = q.hint;
+                stepDiv.appendChild(qHint);
+            }
             
             let optsList = document.createElement('div');
             optsList.className = 'options-list';
