@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Career Stream Finder</title>
+    <title>Find Your Career Stream</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -211,79 +211,95 @@
 
     <!-- Results Section -->
     <div id="results-section" class="step">
-        <h2 class="results-title">Your Personalized Fit Profile</h2>
+        <h2 class="results-title">Your Best Career Path</h2>
         <div class="top-match-box">
             <div style="font-size: 14px; color: #15803d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Your Strongest Match</div>
-            <div class="top-match-stream" id="top-stream-name">Engineering</div>
+            <div class="top-match-stream" id="top-stream-name">Technology & Science</div>
             <p id="top-stream-desc" style="color: #166534; font-size: 14px; margin-top: 8px;"></p>
         </div>
 
-        <h3 style="font-size: 16px; margin-bottom: 12px; color: #334155;">How you score across all streams:</h3>
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: #334155;">Your score for each career path:</h3>
         <div class="chart-container" id="chart-container"></div>
 
-        <button class="restart-btn" onclick="restartQuiz()">Retake the Assessment</button>
+        <button class="restart-btn" onclick="restartQuiz()">Start Over</button>
     </div>
 </div>
 
 <script>
-    // System definitions mapped directly to your 5 streams
+    // Simplified stream names and descriptions
     const STREAMS = {
-        tech: { name: "Engineering, Tech & Pure Sciences", desc: "Focuses heavily on intelligent computing, AI, systems architecture, or high-end core research fields like Quantum and Aerospace." },
-        medical: { name: "Medical, AYUSH & Allied Health", desc: "Suited for healthcare practitioners across classic medicine, alternative care systems (AYUSH), or vital diagnostic and support ecosystems." },
-        commerce: { name: "Commerce, Management & Corporate", desc: "Built for financial frameworks, corporate logistics, enterprise trading, human resources, or real-world operational strategy." },
-        legal: { name: "Legal Studies Stream", desc: "Geared around high-level advocacy, compliance strategy, policy structures, corporate contracts, or the evolving terrain of Cyber Law." },
-        agriculture: { name: "Agricultural Sciences Stream", desc: "Centers around planetary food stability, biotech integration, agribusiness logistics, or ecological engineering systems." }
+        tech: { 
+            name: "Technology, Science & Engineering", 
+            desc: "This path is perfect for people who love computers, coding, robots, solving math puzzles, or building new gadgets." 
+        },
+        medical: { 
+            name: "Medicine & Healthcare", 
+            desc: "This path is great for people who want to help sick patients, work in hospitals, cure diseases, or study how the human body works." 
+        },
+        commerce: { 
+            name: "Business, Finance & Management", 
+            desc: "This path is ideal for people who want to run a business, manage money, plan projects, lead teams, or work in a corporate office." 
+        },
+        legal: { 
+            name: "Law & Justice", 
+            desc: "This path is for people who love debating, writing down strong arguments, helping people find justice, or working with rules and laws." 
+        },
+        agriculture: { 
+            name: "Agriculture & Nature", 
+            desc: "This path is for people who care about plants, animals, farming, protecting nature, and growing healthy food." 
+        }
     };
 
+    // Simplified questions in plain English
     const QUESTIONS = [
         {
-            text: "When confronted with a major real-world bottleneck, which angle naturally excites you most?",
+            text: "When you see a big problem in the world, what is the best way to solve it?",
             options: [
-                { text: "Building an automated tool, code logic, or physical prototype to solve it.", stream: "tech" },
-                { text: "Analyzing how it directly impacts human well-being, safety, or biological survival.", stream: "medical" },
-                { text: "Optimizing the financial costs, labor, and scaling operations to execute a fix.", stream: "commerce" },
-                { text: "Structuring rules, contracts, or policies to safely govern how it is handled.", stream: "legal" },
-                { text: "Evaluating its sustainability impact on ecosystems, soil systems, or organic food structures.", stream: "agriculture" }
+                { text: "Build a computer tool, write code, or make a machine to fix it.", stream: "tech" },
+                { text: "Find out how it affects people's health and try to save lives.", stream: "medical" },
+                { text: "Manage the money, organize the workers, and plan how to run the project.", stream: "commerce" },
+                { text: "Create fair rules or laws so everyone behaves correctly.", stream: "legal" },
+                { text: "Look at how it affects nature, the trees, water, and our food supply.", stream: "agriculture" }
             ]
         },
         {
-            text: "Pick the work dynamic or primary daily landscape where you see yourself thriving:",
+            text: "Where would you feel happiest working every single day?",
             options: [
-                { text: "Deep computational blocks, engineering design tools, or development labs.", stream: "tech" },
-                { text: "Clinical, diagnostic, or emergency care centers actively monitoring health.", stream: "medical" },
-                { text: "Corporate conference rooms, trading desks, or managing dynamic enterprise metrics.", stream: "commerce" },
-                { text: "Arbitration tables, corporate legal departments, or structural policy reviews.", stream: "legal" },
-                { text: "Field stations, ecological labs, or commercial production facilities checking sustainability.", stream: "agriculture" }
+                { text: "In a tech lab, writing code, or working with computers.", stream: "tech" },
+                { text: "In a clinic, dental office, or hospital helping patients.", stream: "medical" },
+                { text: "In a modern office building, managing business deals or accounts.", stream: "commerce" },
+                { text: "In a boardroom, law firm, or courtroom working with legal papers.", stream: "legal" },
+                { text: "Outdoors in nature, on a farm, or in a plant biology laboratory.", stream: "agriculture" }
             ]
         },
         {
-            text: "Which core skill do you find yourself deploying or wanting to develop the most?",
+            text: "Which of these skills would you most like to learn or use?",
             options: [
-                { text: "Mathematical synthesis, system diagnostics, or building algorithmic architecture.", stream: "tech" },
-                { text: "Empathic analysis, physiological diagnostic precision, or clinical intervention.", stream: "medical" },
-                { text: "Negotiation, predictive financial modeling, data analytics, or brand scaling.", stream: "commerce" },
-                { text: "Critical reading, structured rhetorical debate, logic testing, or legal defense.", stream: "legal" },
-                { text: "Environmental assessment, biological engineering, or agricultural resource planning.", stream: "agriculture" }
+                { text: "Solving hard math puzzles, building apps, or fixing computer systems.", stream: "tech" },
+                { text: "Caring for sick people, studying health, and diagnosing illnesses.", stream: "medical" },
+                { text: "Leading a team, making business deals, and learning how to invest money.", stream: "commerce" },
+                { text: "Debating logically, writing strong arguments, and analyzing rules.", stream: "legal" },
+                { text: "Protecting the environment, growing crops, and managing forests.", stream: "agriculture" }
             ]
         },
         {
-            text: "How do you honestly feel about your post-graduation timeline and early career rewards?",
+            text: "How long do you want to study before you start working and earning money?",
             options: [
-                { text: "I want to leap into cutting-edge industry training early or jump fast into tech stacks.", stream: "tech" },
-                { text: "I'm willing to commit to long clinical arcs, or opt for targeted health support tracks.", stream: "medical" },
-                { text: "I want direct operational placement with embedded apprenticeships to earn stipends early.", stream: "commerce" },
-                { text: "I prefer immediate 5-year integrated professional degrees right out of high school/PUC.", stream: "legal" },
-                { text: "I am driven by regional or state-backed technical systems focusing on environmental sectors.", stream: "agriculture" }
+                { text: "I want to study for 4 years and get a well-paid job in technology quickly.", stream: "tech" },
+                { text: "I am happy to study for a long time (5 to 9 years) to become a specialized doctor or therapist.", stream: "medical" },
+                { text: "I want a business degree where I can work as an intern and earn a salary while studying.", stream: "commerce" },
+                { text: "I want to join a 5-year law program right after school so I can start working in law firms.", stream: "legal" },
+                { text: "I want a practical degree that quickly prepares me to work in nature or the food industry.", stream: "agriculture" }
             ]
         },
         {
-            text: "If you had a weekend to deep-dive into an article or research topic, which one wins?",
+            text: "If you had to read an interesting article this weekend, which topic would you choose?",
             options: [
-                { text: "How Autonomous Robotics and Artificial Intelligence are changing baseline manufacturing.", stream: "tech" },
-                { text: "Emerging protocols in medical diagnostics, public health safety, or mental health systems.", stream: "medical" },
-                { text: "How market trading metrics, data analytics, and startup operations navigate recessions.", stream: "commerce" },
-                { text: "The cross-section of data security, constitutional rights, and emerging Cyber Law structures.", stream: "legal" },
-                { text: "The scaling mechanics of natural farming models, forestry management, and global agritech.", stream: "agriculture" }
+                { text: "How robots and Artificial Intelligence (AI) are changing our future.", stream: "tech" },
+                { text: "New discoveries in medicine, healthcare, and brain science.", stream: "medical" },
+                { text: "How major startup companies make money and grow into massive brands.", stream: "commerce" },
+                { text: "How cyber laws protect our personal information from online hackers.", stream: "legal" },
+                { text: "How smart farming and new biology tools are saving our environment and food.", stream: "agriculture" }
             ]
         }
     ];
@@ -382,14 +398,14 @@
             
             let barFill = document.createElement('div');
             barFill.className = 'chart-bar-fill';
-            if(key === topStreamKey) barFill.style.background = '#16a34a'; // Green accent for champion
+            if(key === topStreamKey) barFill.style.background = '#16a34a'; // Green accent for the winning category
             
             barBg.appendChild(barFill);
             row.appendChild(labelRow);
             row.appendChild(barBg);
             chartContainer.appendChild(row);
             
-            // Trigger animation on layout paint frame
+            // Trigger bar animation
             setTimeout(() => { barFill.style.width = `${pct}%`; }, 50);
         }
     }
